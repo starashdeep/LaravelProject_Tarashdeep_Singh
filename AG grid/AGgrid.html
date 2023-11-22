@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ag Grid App</title>
+  <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.noStyle.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css" />
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-8">
+        <!-- Content for the left column -->
+        <button onclick="deselect()">Deselect Rows</button>
+        <!-- AG Grid component goes here -->
+        <div id="myGrid" class="ag-theme-alpine" style="height: 500px; width: 100%;"></div>
+      </div>
+      <div class="col-md-4">
+        <!-- Content for the right column -->
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // Function to demonstrate calling grid's API
+    function deselect() {
+      gridOptions.api.deselectAll()
+    }
+  
+    // Custom checkbox cell renderer
+    function checkboxCellRenderer(params) {
+      // Assuming the field for the checkbox is 'selected'
+      return `<input type="checkbox" ${params.data.selected ? 'checked' : ''} />`;
+    }
+  
+    // Grid Options are properties passed to the grid
+    const gridOptions = {
+      columnDefs: [
+        { field: "make" },
+        { field: "model" },
+        { field: "price" },
+        // Add a column with checkbox cell renderer
+        { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+        // Add more columns as needed
+      ],
+      defaultColDef: { sortable: true, filter: true },
+      rowSelection: 'multiple',
+      animateRows: true,
+      onCellClicked: params => {
+        console.log('cell was clicked', params)
+      },
+      getRowStyle: params => {
+        // Change 'your_specific_value' to the actual value you want to match
+        if (params.data.make === 'Toyota') {
+          return { background: 'red' }; // set the background color to red
+        }
+        return null; // return null for rows without special styling
+      },
+    };
+  
+    // get div to host the grid
+    const eGridDiv = document.getElementById("myGrid");
+    // new grid instance, passing in the hosting DIV and Grid Options
+    new agGrid.Grid(eGridDiv, gridOptions);
+  
+    // Fetch data from server
+    fetch("https://www.ag-grid.com/example-assets/row-data.json")
+      .then(response => response.json())
+      .then(data => {
+        // Add 'selected' property to each row for the checkbox
+        var total = [];
+
+            for(var i = 1; i <= 1000; i++)
+            {
+                total = total.concat(data);
+            }
+
+            console.log(total.length);
+            gridOptions.api.setRowData(total);
+      });
+  </script>
+</body>
+
+</html>

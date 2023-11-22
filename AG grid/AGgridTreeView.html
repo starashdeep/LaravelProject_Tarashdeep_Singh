@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="en">
+	<head>
+		<title>Ag grid Tree view</title>
+		<meta charSet="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<style media="only screen">
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                box-sizing: border-box;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            html {
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 0;
+                overflow: auto;
+            }
+            
+            body {
+              padding: 1rem;
+              overflow: auto;
+            }
+            </style>
+		<link rel="stylesheet" href="style.css"/>
+	</head>
+	<body>
+    <div id="myGrid" class="ag-theme-alpine" style="height: 100%;">
+		</div>
+		<script>var __basePath = './';</script>
+		<script src="https://cdn.jsdelivr.net/npm/ag-grid-enterprise@30.2.1/dist/ag-grid-enterprise.min.js">
+    </script>
+    <script src="data.js"></script>
+		<script>
+            const gridOptions = {
+                columnDefs: [
+                    // we're using the auto group column by default!
+                    { field: 'jobTitle' },
+                    { field: 'employmentType' },
+                ],
+                defaultColDef: {
+                    flex: 1,
+                },
+                autoGroupColumnDef: {
+                    headerName: 'Organisation Hierarchy',
+                    minWidth: 300,
+                    cellRendererParams: {
+                        suppressCount: true,
+                        checkbox: true,
+                    },
+                },
+                rowData: getData(),
+                treeData: true, // enable Tree Data mode
+                animateRows: true,
+                // groupDefaultExpanded: -1, // expand all groups by default
+                rowSelection: 'multiple',
+                groupSelectsChildren: true,
+                // suppressRowClickSelection: true,
+                getDataPath: (data) => {
+                    return data.orgHierarchy;
+                },
+
+                //TO COLOR SOME ROW
+                // getRowStyle: params => {
+                // // Change 'Erica Rogers' to the specific value you want to match
+                //     if (
+                //         params.data.orgHierarchy &&
+                //         params.data.orgHierarchy[0] == 'Erica Rogers'
+                //     ) {
+                //         return { background: 'red' }; // set the background color to red
+                //     }
+                //     return null; // return null for rows without special styling
+                // },
+
+                
+                //  TO COLOR A SPECIFIC ROW INSIADE A ROW
+              // getRowStyle: params => {
+              //     // Check if the row is inside 'Erica Rogers' hierarchy
+              //     if (
+              //         params.data.orgHierarchy &&
+              //         params.data.orgHierarchy[0] === 'Erica Rogers'
+              //     ) {
+              //         // Change the condition inside the 'Erica Rogers' hierarchy
+              //         if (
+              //             params.data.orgHierarchy.length === 2 &&
+              //             params.data.orgHierarchy[1] === 'Malcolm Barrett'
+              //         ) {
+              //             return { background: 'yellow' }; // set the background color to yellow
+              //         }
+              //     }
+              //     return null; // return null for rows without special styling
+              // },
+            };
+
+
+            // wait for the document to be loaded, otherwise
+            // AG Grid will not find the div in the document.
+            document.addEventListener('DOMContentLoaded', function () {
+                // lookup the container we want the Grid to use
+                var eGridDiv = document.querySelector('#myGrid');
+
+                // create the grid passing in the div to use together with the columns & data we want to use
+                new agGrid.Grid(eGridDiv, gridOptions);
+            });
+            </script>
+    </body>
+    <link rel="stylesheet" href="style.css"/>
+</html>
